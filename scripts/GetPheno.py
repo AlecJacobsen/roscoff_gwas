@@ -37,6 +37,7 @@ samples.to_csv(out_file + '_all.txt',sep = '\t', index = False)
 
 #strain file
 strain = samples[['FID','IID','strain']]
+strain['b_strain'] = strain['strain'].apply(lambda x: 1 if x == 'FM' else 0) 
 strain.to_csv(out_file + '_strain.txt',sep = '\t', index = False)
 #strain covariates
 #samples[['FID','IID','time']].to_csv('strain_cov.txt',sep='\t',index = False)

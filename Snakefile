@@ -24,8 +24,7 @@ rule Target:
         "plots/ros_286.HWE.pdf",
         "plots/ros_286.Het.pdf",
         "plots/PCA.pdf",
-        "plink/ros_286_imputed.raw"
-        #"GWAS/Strain_GWAS.csv"
+        "GWAS/Strain_GWAS.results"
 
         #"output/ros_286_GRM.log.txt",
         #"output/ros_286_GRM.cXX.txt"
@@ -225,7 +224,7 @@ rule Depth_plot:
     output:
         "plots/ros_286.depth.pdf"
     shell:
-        "python3 scripts/depthPlot.py -i {input.idepth_file} -s {input.samples_file} -o {output}"
+        "python3 roscoff_gwas/scripts/depthPlot.py -i {input.idepth_file} -s {input.samples_file} -o {output}"
 
 rule Get_Missing_indiv:
     input:
@@ -242,7 +241,7 @@ rule Missing_indiv_plot:
     output:
         'plots/ros_286.missing_indv.pdf'
     shell:
-        "python3 scripts/missingPlot.py -i {input.imiss} -s {input.samples_file} -o {output}"
+        "python3 roscoff_gwas/scripts/missingPlot.py -i {input.imiss} -s {input.samples_file} -o {output}"
 
 rule Get_het:
     input:
@@ -259,7 +258,7 @@ rule Het_plot:
     output:
         'plots/ros_286.Het.pdf'
     shell:
-        "python3 scripts/HetPlot.py -i {input.het} -s {input.samples_file} -o {output}"
+        "python3 roscoff_gwas/scripts/HetPlot.py -i {input.het} -s {input.samples_file} -o {output}"
 
 rule Get_hardy:
     input:
@@ -275,7 +274,7 @@ rule Hardy_plot:
     output:
         'plots/ros_286.HWE.pdf'
     shell:
-        "python3 scripts/HwePlot.py -i {input} -o {output}"
+        "python3 roscoff_gwas/scripts/HwePlot.py -i {input} -o {output}"
 
 rule Filter_Poor_Indivs:
     input:
@@ -332,7 +331,7 @@ rule PCA_plot:
     output:
         "plots/PCA.pdf"
     shell:
-        "python3 scripts/plotPCA.py --vec {input.vec} --val {input.val} --out {output}"
+        "python3 roscoff_gwas/scripts/plotPCA.py --vec {input.vec} --val {input.val} --out {output}"
 
 rule Get_phenotypes:
     input:
@@ -344,7 +343,7 @@ rule Get_phenotypes:
     shell:
         """
         cut -d' ' -f2 {input} > {output.samples}
-        python3 scripts/GetPheno.py -i {output.samples} -o GWAS/pheno
+        python3 roscoff_gwas/scripts/GetPheno.py -i {output.samples} -o GWAS/pheno
         """
 
 rule Make_bed:
@@ -380,14 +379,22 @@ rule Make_raw:
 rule Strain_GWAS:
     input:
         geno = "plink/ros_286_imputed.bed",
-        pheno = "GWAS/pheno_all.txt",
+        pheno = "GWAS/pheno_strain.txt",
         map = "plink/ros_286_imputed.map"
     output:
-        "GWAS/Strain_GWAS.csv"
+        results = "GWAS/Strain_GWAS.results"
     shell:
-        """
-        marker_num=`wc -l plink/ros_286_imputed.map | cut -d' ' -f1`
-        Rscript --vanilla scripts/BianaryGWAS.r {input.geno} $marker_num {input.pheno} {output}
-        """
+        "Rscript --vanilla roscoff_gwas/scripts/BinaryGWAS_LMM.r {input.geno} {input.map} {input.pheno} b_strain {output.results} plots/Strain_GWAS"
 
-## use cox-meg for time to event GWAS
+#rule Strain_GWAS_GLMM:
+#    input:
+#        geno = "plink/ros_286_imputed.bed",
+#        pheno = "GWAS/pheno_strain.txt",
+#        map = "plink/ros_286_imputed.map"
+#    output:
+#        results = "GWAS/Strain_GWAS_GLMM.txt"
+#    shell:
+#        "Rscript --vanilla roscoff_gwas/scripts/BinaryGWAS_LMM.r {input.geno} {input.map} {input.pheno} b_strain {output.results} plots/Strain_GWAS"
+
+
+## use coxmeg for time to event GWAS
