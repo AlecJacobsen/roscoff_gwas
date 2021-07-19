@@ -1,4 +1,5 @@
 #################### Binary Trait GWAS with GLMM and Kinship Matrix ##############################
+setwd("/mnt/beegfs/alec/GWAS")
 
 library(qqman)
 library(genio)
@@ -14,7 +15,7 @@ if (length(args)<6) {
 
 #### Reading in phenotypes ####
 print("Reading in phenotypes")
-pheno.file <- args[3] #"GWAS/pheno_strain.txt"
+pheno.file <- args[3] #"GWAS/pheno_all.txt"
 phenotype <- args[4] #"b_strain"
 
 pheno <- read.table(pheno.file, header = TRUE)
@@ -49,7 +50,8 @@ print("Done!")
 
 ## Running the GWAS ##
 print("Fitting the GLMM")
-model <- glmmkin(b_strain ~ ., data = Y, kins = K, id = "IID", family = binomial(link = "logit"))
+form <- as.formula(paste(phenotype,"~1"))
+model <- glmmkin(form, data = Y, kins = K, id = "IID", family = binomial(link = "logit"))
 print("Running GWAS")
 glmm.score(model, infile = args[1], outfile = args[5]) #infile = "plink/ros_286_imputed.bed", outfile = "GWAS/Strain_GWAS_GLMM.txt")
 print("Done!")

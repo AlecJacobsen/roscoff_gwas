@@ -24,7 +24,8 @@ rule Target:
         "plots/ros_286.HWE.pdf",
         "plots/ros_286.Het.pdf",
         "plots/PCA.pdf",
-        "GWAS/Strain_GWAS.results"
+        "GWAS/pheno_all.txt",
+        "GWAS/pheno_strain.txt"
 
         #"output/ros_286_GRM.log.txt",
         #"output/ros_286_GRM.cXX.txt"

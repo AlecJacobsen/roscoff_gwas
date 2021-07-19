@@ -1,4 +1,5 @@
 #################### Bianary Trait GWAS with an LMM and Kinship Matrix ##############################
+setwd("/mnt/beegfs/alec/GWAS")
 
 library(qqman)
 library(genio)
@@ -19,6 +20,7 @@ phenotype <- args[4] #"b_strain"
 
 pheno <- read.table(pheno.file, header = TRUE)
 
+print(phenotype)
 
 Y <- pheno[,c("IID",phenotype)]
 rownames(Y) <- pheno$IID
