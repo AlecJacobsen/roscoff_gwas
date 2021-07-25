@@ -396,6 +396,3 @@ rule Strain_GWAS:
 #        results = "GWAS/Strain_GWAS_GLMM.txt"
 #    shell:
 #        "Rscript --vanilla roscoff_gwas/scripts/BinaryGWAS_LMM.r {input.geno} {input.map} {input.pheno} b_strain {output.results} plots/Strain_GWAS"
-
-
-## use coxmeg for time to event GWAS
